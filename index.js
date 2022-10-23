@@ -58,7 +58,9 @@ app.get('/authtest', isAuthenticated, (req,res) =>{
     if (req.isAuth) res.status(200).send(true)
     else res.status(200).send(false)
 })
-
+app.get ('/', (req, res) => {
+    res.send("Backend is up")
+})
 app.get("/verify/:token", async (req, res)=>{
     try {
         const result = await verifyTokenModel.findOne({token:req.params.token})
