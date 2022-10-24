@@ -23,7 +23,7 @@ const app = express()
 dotenv.config();
 
 const corsOptions ={
-    origin:'https://henrycodeproj.github.io',
+    origin:'*',
     credentials:true,           
     optionSuccessStatus:200,
 }
@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'https://henrycodeproj.github.io',
+        origin:'*',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true
     }
