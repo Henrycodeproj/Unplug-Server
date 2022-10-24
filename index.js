@@ -78,7 +78,7 @@ app.get("/verify/:token", async (req, res)=>{
     } 
 })
 app.post("/tester", async (req,res) => {
-    console.log(req.body)
+    console.log(req.body.userUser)
     const {username, password, email} = req.body
     res.status(200).send({user:username, password:password, email:email})
 })
