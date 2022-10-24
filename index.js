@@ -23,7 +23,7 @@ const app = express()
 dotenv.config();
 
 const corsOptions ={
-    origin:'http://localhost:3000',
+    origin:'https://henrycodeproj.github.io/unplug-client/',
     credentials:true,           
     optionSuccessStatus:200,
 }
