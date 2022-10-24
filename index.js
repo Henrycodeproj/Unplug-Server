@@ -77,6 +77,10 @@ app.get("/verify/:token", async (req, res)=>{
         res.status(500).send('Internal Server Error')
     } 
 })
+app.post("/tester", async (req,res) => {
+    console.log(req.body)
+    const {username, password, email} = req.body
+})
 
 app.post("/createUser", async (req,res) => {
     console.log(req.body)
