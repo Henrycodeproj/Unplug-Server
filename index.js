@@ -23,7 +23,7 @@ const app = express()
 dotenv.config();
 
 const corsOptions ={
-    origin:'*',
+    origin:'http://henrycodeproj.github.io/unplug-client/',
     credentials:true,           
     optionSuccessStatus:200,
 }
@@ -34,14 +34,13 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'*',
+        origin:'http://henrycodeproj.github.io/unplug-client/',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true
     }
 });
 
-//app.use(cors(corsOptions));
-app.use(cors())
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/posts', PostsRouter);
 app.use('/user', UserRouter);
