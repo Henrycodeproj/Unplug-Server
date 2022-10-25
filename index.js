@@ -35,9 +35,10 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'https://henrycodeproj.github.io/unplug-client/',
+        origin:'*',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true,
+        preflightContinue:false,
     }
 });
 
@@ -85,7 +86,6 @@ app.post("/tester", async (req,res) => {
 })
 
 app.post("/createUser", async (req,res) => {
-    console.log(req.body)
     const {username, password, email} = req.body
 
     const newUser = new UserModel({
