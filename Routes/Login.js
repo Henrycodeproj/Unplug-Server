@@ -7,6 +7,7 @@ export const router = express.Router()
 
 router.post('/', async (req,res) =>{
     const {login_username, login_password} = req.body
+    console.log(req.body)
     try {
         const user = await UserModel.findOne({username:login_username})
         if (user){
