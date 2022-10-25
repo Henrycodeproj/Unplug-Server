@@ -23,9 +23,10 @@ const app = express()
 dotenv.config();
 
 const corsOptions ={
-    origin:'http://henrycodeproj.github.io/unplug-client/',
+    origin:'*',
     credentials:true,           
     optionSuccessStatus:200,
+    "preflightContinue": false,
 }
 
 const httpServer = createServer(app);
@@ -36,7 +37,7 @@ const io = new Server(httpServer, {
     cors:{
         origin:'https://henrycodeproj.github.io/unplug-client/',
         methods:["GET", "POST", "PATCH", "DELETE"],
-        credentials:true
+        credentials:true,
     }
 });
 
