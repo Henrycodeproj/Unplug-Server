@@ -34,13 +34,13 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'http://henrycodeproj.github.io/unplug-client/',
+        origin:'https://henrycodeproj.github.io/unplug-client/',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true
     }
 });
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/posts', PostsRouter);
 app.use('/user', UserRouter);
