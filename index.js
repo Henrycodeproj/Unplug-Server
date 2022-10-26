@@ -87,7 +87,7 @@ app.post("/tester", async (req,res) => {
 app.post("/createUser", async (req,res) => {
     const {username, password, email} = req.body
     const newUser = new UserModel({
-        username:username,
+        username:username.charAt(0).toUpperCase() + username.slice(1),
         password:password,
         email:email,
         isVerified:true

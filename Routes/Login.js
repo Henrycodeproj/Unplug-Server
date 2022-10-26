@@ -6,11 +6,9 @@ import UserModel from "../Models/Users.js";
 export const router = express.Router()
 
 router.post('/', async (req,res) =>{
-    console.log("login route hit")
     const {login_username, login_password} = req.body
-    console.log(req.body, 'req body here')
     try {
-        const user = await UserModel.findOne({username:login_username})
+        const user = await UserModel.findOne({username: login_username.charAt(0).toUpperCase() + login_username.slice(1)})
         console.log(user)
         if (user){
             bcrypt.compare(login_password, user.password, (err, result) =>{
