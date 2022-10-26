@@ -26,7 +26,6 @@ const corsOptions ={
     origin:'*',
     credentials:true,           
     optionSuccessStatus:200,
-    //preflightContinue:false,
 }
 
 const httpServer = createServer(app);
@@ -35,10 +34,9 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'https://henrycodeproj.github.io/unplug-client/',
+        origin:'http://henrycodeproj.github.io/unplug-client/',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true,
-        preflightContinue:false,
     }
 });
 
