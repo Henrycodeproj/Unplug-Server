@@ -17,16 +17,25 @@ router.post('/', async (req,res) =>{
                 if(!result) return res.status(400).send({message:'This password you have entered is incorrect. Please try again.'})
 
                 const accessToken = jwt.sign(
-                    {username:user.username, id:user.id},
-                     process.env.SECRET_SESSION,
-                    { expiresIn: '1d'}
+                    {
+                        username:user.username,
+                        id:user.id
+                    },
+                    process.env.SECRET_SESSION,
+                    {
+                        expiresIn: '1d'
+                    }
                 )
 
                 res.status(200).send(
                     {
                         message:'Logging In...',
                         accessToken: accessToken, 
-                        user: {id: user.id, username: user.username, collegeAffiliation:user.collegeAffiliation}
+                        user: {
+                            id: user.id,
+                            username: user.username, 
+                            collegeAffiliation:user.collegeAffiliation
+                        }
                     }
                 )
 
