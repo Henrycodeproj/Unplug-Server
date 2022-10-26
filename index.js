@@ -37,7 +37,7 @@ const io = new Server(httpServer, {
         origin:['https://unplugme.netlify.app/', 'http://localhost:3000'],
         methods:["GET", "POST", "PATCH", "DELETE"],
         //allowedHeaders: ["my-custom-header"],
-        credentials: true
+        //credentials: true
     }
 });
 
