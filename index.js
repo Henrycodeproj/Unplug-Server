@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'https://henrycodeproj.github.io/unplug-client/',
+        origin:'https://unplugme.netlify.app/',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true,
     }
