@@ -86,7 +86,7 @@ app.post("/tester", async (req,res) => {
 
 app.post("/createUser", async (req,res) => {
     const {username, password, email} = req.body
-
+    console.log(req.body)
     const newUser = new UserModel({
         username:username,
         password:password,
