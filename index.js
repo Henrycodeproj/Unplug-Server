@@ -34,10 +34,11 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:['https://unplugme.netlify.app/', 'http://localhost:3000'],
+        //origin:['https://unplugme.netlify.app/', 'http://localhost:3000'],
+        origin:'http://localhost:3000',
         methods:["GET", "POST", "PATCH", "DELETE"],
-        //allowedHeaders: ["my-custom-header"],
-        //credentials: true
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
     }
 });
 
