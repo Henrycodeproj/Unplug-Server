@@ -35,7 +35,7 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:'*',
+        origin:'https://henrycodeproj.github.io/unplug-client/',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true,
         preflightContinue:false,
