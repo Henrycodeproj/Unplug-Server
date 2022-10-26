@@ -11,6 +11,7 @@ router.post('/', async (req,res) =>{
     console.log(req.body)
     try {
         const user = await UserModel.findOne({username:login_username})
+        console.log(user)
         if (user){
             bcrypt.compare(login_password, user.password, (err, result) =>{
                 if(err) return res.status(500).send({message:'Internal server problem'})
