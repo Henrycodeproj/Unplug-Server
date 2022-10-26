@@ -9,7 +9,7 @@ router.post('/', async (req,res) =>{
     const {login_username, login_password} = req.body
     try {
         //const user = await UserModel.findOne({username: login_username.charAt(0).toUpperCase() + login_username.slice(1)})
-        const user = await UserModel.findOne({username:{'$regex' : '^username$', '$options' : 'i'}})
+        const user = await UserModel.findOne({username:{'$regex' : login_username, '$options' : 'i'}})
         console.log(user)
         if (user){
             bcrypt.compare(login_password, user.password, (err, result) =>{
