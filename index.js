@@ -36,6 +36,8 @@ const io = new Server(httpServer, {
     cors:{
         origin:'https://unplugme.netlify.app/',
         methods:["GET", "POST", "PATCH", "DELETE"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
     }
 });
 
