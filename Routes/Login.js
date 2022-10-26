@@ -7,6 +7,7 @@ export const router = express.Router()
 
 router.post('/', async (req,res) =>{
     const {login_username, login_password} = req.body
+    console.log(req.body)
     try {
         const user = await UserModel.findOne({username:{'$regex' : login_username, '$options' : 'i'}})
         console.log(user)
