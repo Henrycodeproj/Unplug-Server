@@ -40,7 +40,8 @@ const io = new Server(httpServer, {
     }
 });
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
+app.options('*', cors())
 app.use(express.json());
 app.use('/posts', PostsRouter);
 app.use('/user', UserRouter);
