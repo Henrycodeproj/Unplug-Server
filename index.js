@@ -36,11 +36,10 @@ const io = new Server(httpServer, {
     cors:{
         origin:'https://unplugme.netlify.app/',
         methods:["GET", "POST", "PATCH", "DELETE"],
-        credentials:true,
     }
 });
 
-//app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/posts', PostsRouter);
 app.use('/user', UserRouter);
