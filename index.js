@@ -141,7 +141,7 @@ io.on("connection", (socket) => {
 
     socket.on("logout", (data) => {
         delete activeUsers[data.userID]
-        socket.broadcast.emit("activeUsers", activeUsers)
+        socket.emit("activeUsers", activeUsers)
     })
 
     // new chats socket handler
@@ -161,7 +161,7 @@ io.on("connection", (socket) => {
                 }
             ]
         }
-        socket.emit(`${newChatInfo.recipientId}`, newMessage)
+        socket.broadcast.emit(`${newChatInfo.recipientId}`, newMessage)
     })
 
     //Direct Messages
