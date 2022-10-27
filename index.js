@@ -133,9 +133,8 @@ let activeUsers = {}
 io.on("connection", (socket) => {
 
     socket.on("status", (userInfo) => {
-        if (!userInfo.userId in activeUsers)
-            activeUsers[userInfo.userId] = socket.id
-            socket["userID"] = userInfo.userId
+        activeUsers[userInfo.userId] = socket.id
+        socket["userID"] = userInfo.userId
         socket.emit("activeUsers", activeUsers)
     })
 
