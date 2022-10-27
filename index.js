@@ -161,12 +161,12 @@ io.on("connection", (socket) => {
                 }
             ]
         }
-        socket.broadcast.emit(`${newChatInfo.recipientId}`, newMessage)
+        socket.emit(`${newChatInfo.recipientId}`, newMessage)
     })
 
     //Direct Messages
     socket.on("sendUserId", data =>{
-        socket.broadcast.emit(`${data.chatId}`, data)
+        socket.emit(`${data.chatId}`, data)
     });
 
     socket.on("disconnect", () => {
