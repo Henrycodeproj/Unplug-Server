@@ -135,6 +135,7 @@ io.on("connection", (socket) => {
     socket.on("status", (userInfo) => {
         if (userInfo.userId)
             activeUsers[userInfo.userId] = socket.id
+            socket["userID"] = userInfo.userId
         socket.emit("activeUsers", activeUsers)
     })
 
@@ -169,7 +170,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log(activeUsers, 'remaining active users')
+        delete activeUsers[socket.userID]
     });
 })
 
