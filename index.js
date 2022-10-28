@@ -138,7 +138,7 @@ io.on("connection", (socket) => {
             socket["userID"] = userInfo.userId
         }
         socket.emit("activeUsers", activeUsers)
-        console.log(activeUsers)
+        console.log(activeUsers, 'connected')
     })
 
     socket.on("logout", (data) => {
@@ -173,7 +173,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         delete activeUsers[socket.userID]
-        console.log(activeUsers)
+        console.log(activeUsers, 'disconnected')
     });
 })
 
