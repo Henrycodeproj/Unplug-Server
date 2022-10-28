@@ -171,6 +171,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         delete activeUsers[socket.userID]
+        socket.socket.removeAllListeners();
         console.log(activeUsers)
     });
 })
