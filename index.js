@@ -129,6 +129,7 @@ app.post("/createUser", async (req,res) => {
 })
 
 let activeUsers = {}
+let activeConversations = {}
 
 io.on("connection", (socket) => {
 
@@ -171,7 +172,6 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         delete activeUsers[socket.userID]
-        socket.socket.removeAllListeners();
         console.log(activeUsers)
     });
 })
