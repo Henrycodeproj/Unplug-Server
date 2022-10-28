@@ -129,7 +129,6 @@ app.post("/createUser", async (req,res) => {
 })
 
 let activeUsers = {}
-let activeConversations = {}
 
 io.on("connection", (socket) => {
 
@@ -167,7 +166,7 @@ io.on("connection", (socket) => {
 
     //Direct Messages
     socket.on("sendUserId", data =>{
-        socket.broadcast.emit(`${data.chatId}`, data)
+        socket.emit(`${data.chatId}`, data)
     });
 
     socket.on("disconnect", () => {
