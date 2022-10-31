@@ -169,8 +169,7 @@ io.on("connection", (socket) => {
 
     //Direct Messages
     socket.on("sendUserId", data =>{
-        console.log(data, 'direct messaging')
-        socket.emit(`${data.chatId}`, data)
+        socket.broadcast.emit(`${data.chatId}`, data)
     });
 
     socket.on("disconnect", () => {
