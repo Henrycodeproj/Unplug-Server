@@ -148,7 +148,7 @@ io.on("connection", (socket) => {
 
     // new chats socket handler
     socket.on("messages", (newChatInfo) => {
-        console.log(newChatInfo)
+        console.log(newChatInfo, 'checking message')
         const newMessage = {
             _id: newChatInfo.chatId,
             recieverInfo: [
