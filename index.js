@@ -143,6 +143,7 @@ io.on("connection", (socket) => {
 
     socket.on("logout", (data) => {
         delete activeUsers[data.userID]
+        delete socket[data.userID]
         socket.emit("activeUsers", activeUsers)
     })
 
