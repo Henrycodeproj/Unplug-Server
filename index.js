@@ -23,7 +23,7 @@ const app = express()
 dotenv.config();
 
 const corsOptions ={
-    origin:'https://unplugme.netlify.app/',
+    origin:'*',
     credentials:true,           
     optionSuccessStatus:200,
 }
