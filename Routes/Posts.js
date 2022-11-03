@@ -24,7 +24,7 @@ router.post('/', isAuthenticated, async (req,res) =>{
 })
 
 router.get('/all', isAuthenticated, async (req, res) =>{
-    
+
     try {
         const posts = await PostModel.find({})
         .sort({createdAt: -1})
@@ -37,6 +37,15 @@ router.get('/all', isAuthenticated, async (req, res) =>{
 })
 
 router.get('/amount/:postAmount/', isAuthenticated, async (req, res) =>{
+    try {
+        const filter = { _id : req.results.id };
+        const update = { lastActiveDate: new Date() };
+        await UserModel.findOneAndUpdate(filter, update, {
+            new:true
+        })
+    } catch (error) {
+        console.log(error)
+    }
     try{
         const posts = await PostModel.find({})
         .sort({createdAt: -1})
