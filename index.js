@@ -173,7 +173,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        delete activeUsers[socket.userID]
+        //delete activeUsers[socket.userID]
         console.log(activeUsers, 'disconnected')
     });
 })
