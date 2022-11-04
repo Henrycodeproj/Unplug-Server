@@ -133,7 +133,7 @@ let activeUsers = {}
 io.on("connection", (socket) => {
 
     socket.on("status", (userInfo) => {
-        console.log(!userInfo.userId in activeUsers, 'testing if user in activeUsers')
+        console.log(userInfo.userId)
         if (!userInfo.userId in activeUsers){
             activeUsers[userInfo.userId] = socket.id
             //socket["userID"] = userInfo.userId
