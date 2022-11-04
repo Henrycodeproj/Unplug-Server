@@ -136,7 +136,7 @@ io.on("connection", (socket) => {
         console.log(!userInfo.userId in activeUsers, 'testing if user in activeUsers')
         if (!userInfo.userId in activeUsers){
             activeUsers[userInfo.userId] = socket.id
-            socket["userID"] = userInfo.userId
+            //socket["userID"] = userInfo.userId
         }
         socket.broadcast.emit("activeUsers", userInfo.userId)
     })
