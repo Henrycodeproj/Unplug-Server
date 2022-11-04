@@ -13,7 +13,7 @@ const PostSchema = new mongoose.Schema({
     expiresAt: {
         type: Date,
         default: Date.now,
-        expires: '1d',
+        index : { expires: '1d' }
     }
 },{timestamps:true})
 
