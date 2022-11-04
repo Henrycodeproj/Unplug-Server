@@ -7,6 +7,7 @@ import ReportModel from '../Models/Report.js';
 export const router = express.Router();
 
 router.post('/', isAuthenticated, async (req,res) =>{
+    if (!req.isAuth) return res.status(400).send({messages : "You are not authorized."})
     try {
         const {user, post} = req.body
         const newPosts = new PostModel({
