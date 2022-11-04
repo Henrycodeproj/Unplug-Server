@@ -137,7 +137,7 @@ io.on("connection", (socket) => {
             activeUsers[userInfo.userId] = socket.id
             socket["userID"] = userInfo.userId
         }
-        socket.broadcast.emit("activeUsers", userInfo.Id)
+        socket.broadcast.emit("activeUsers", userInfo.userId)
     })
 
     socket.on("logout", (data) => {
