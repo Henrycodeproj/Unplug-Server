@@ -137,12 +137,12 @@ io.on("connection", (socket) => {
             activeUsers[userInfo.userId] = socket.id
             socket["userID"] = userInfo.userId
         }
-        socket.emit("activeUsers", userInfo.Id)
+        socket.broadcast.emit("activeUsers", userInfo.Id)
     })
 
     socket.on("logout", (data) => {
         delete activeUsers[data.userID]
-        socket.emit("inactiveUsers", data.userID)
+        socket.broadcast.emit("inactiveUsers", data.userID)
     })
 
     // new chats socket handler
