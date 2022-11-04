@@ -19,15 +19,13 @@ router.post('/', isAuthenticated, async (req,res) =>{
     } catch (error) {
         res.status(404).send({messages:"There was an error while uploading your post."})
     } 
-    try {
-        const newestPost = await PostModel.findOne({posterId:user, Description:post})
-        .sort({createdAt:-1})
-        .populate('posterId', ['username','email', 'createdAt'])
-        if (newPosts) return res.status(200).send({message:'Posted', newestPost:newestPost})
-        return res.status(500).send({message:'Error your post failed.'})
-    } catch (error) {
-        res.status(500).send({message:"Internal server error."})
-    }
+
+    const newestPost = await PostModel.findOne({posterId:user, Description:post})
+    .sort({createdAt:-1})
+    .populate('posterId', ['username','email', 'createdAt'])
+    if (newPosts) return res.status(200).send({message:'Posted', newestPost:newestPost})
+    else return res.status(500).send({message:'Error your post failed.'})
+
 })
 
 router.get('/all', isAuthenticated, async (req, res) =>{
