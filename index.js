@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
 
     socket.on("logout", (data) => {
         delete activeUsers[data.userID]
-        socket.emit("isActiveUsers", data.userID)
+        socket.emit("isactiveUsers", data.userID)
     })
 
     // new chats socket handler
