@@ -7,17 +7,25 @@ import ReportModel from '../Models/Report.js';
 export const router = express.Router();
 
 router.post('/', isAuthenticated, async (req,res) =>{
-    const {user, post} = req.body
-    const newPosts = new PostModel({
-        Description:post,
-        posterId:user
-    })
+    if (!req.isAuth) res.status(400).send({messages:"Bad Request"})
+    try {
+        const {user, post} = req.body
+        const newPosts = new PostModel({
+            Description:post,
+            posterId:user
+        })
 
-    await newPosts.save()
-
-    const newestPost = await PostModel.findOne({posterId:user, Description:post})
-    .sort({createdAt:-1})
-    .populate('posterId', ['username','email', 'createdAt'])
+        await newPosts.save()
+    } catch (error) {
+        res.status(404).send({messages:"There was an error while uploading your post."})
+    } 
+    try {
+        const newestPost = await PostModel.findOne({posterId:user, Description:post})
+        .sort({createdAt:-1})
+        .populate('posterId', ['username','email', 'createdAt'])
+    } catch (error) {
+        res.status(404).send({messages:"There was an error while uploading your post."})
+    }
     
     if (newPosts) return res.status(200).send({message:'Posted', newestPost:newestPost})
     return res.status(500).send({message:'Error your post failed.'})
