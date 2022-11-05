@@ -133,10 +133,12 @@ let activeUsers = {}
 io.on("connection", (socket) => {
 
     socket.on("status", (userInfo) => {
+        console.log(!userInfo.userId in activeUsers, userInfo)
         if (!userInfo.userId in activeUsers){
             activeUsers[userInfo.userId] = socket.id
             socket[socket.id] = userInfo.userId
         }
+        console.log(activeUsers, 'activeusers conneciton')
         io.emit("activeUsers", activeUsers)
     })
 
