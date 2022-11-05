@@ -137,7 +137,6 @@ io.on("connection", (socket) => {
             activeUsers[userInfo.userId] = socket.id
             socket[socket.id] = userInfo.userId
         }
-        console.log(activeUsers, 'activeusers conneciton')
         io.emit("activeUsers", activeUsers)
     })
 
@@ -148,7 +147,6 @@ io.on("connection", (socket) => {
 
     // new chats socket handler
     socket.on("messages", (newChatInfo) => {
-        console.log(newChatInfo, 'checking message')
         const newMessage = {
             _id: newChatInfo.chatId,
             recieverInfo: [
