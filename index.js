@@ -133,16 +133,16 @@ let activeUsers = {}
 io.on("connection", (socket) => {
 
     socket.on("status", (userInfo) => {
-        if (userInfo.userId){
+        if (!userInfo.userId in activeUsers){
             activeUsers[userInfo.userId] = socket.id
-            //socket["userID"] = userInfo.userId
+            socket[socket.id] = userInfo.userId
         }
-        socket.broadcast.emit("activeUsers", userInfo.userId)
+        io.emit("activeUsers", activeUsers)
     })
 
     socket.on("logout", (data) => {
         delete activeUsers[data.userID]
-        socket.broadcast.emit("inactiveUsers", data.userID)
+        io.emit("inactiveUsers", activeUsers)
     })
 
     // new chats socket handler
@@ -172,8 +172,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        //delete activeUsers[socket.userID]
-        console.log(activeUsers, 'disconnected')
+        delete activeUsers[socket[socket.id]]
+        io.emit("inactiveUsers", activeUsers)
     });
 })
 
