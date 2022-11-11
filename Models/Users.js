@@ -25,12 +25,16 @@ const UserSchema = new mongoose.Schema({
         type:String,
         default:""
     },
-    isVerified:Boolean,
-    sessionToken:String,
     lastActiveDate: {
         type:Date,
         default:null
-    }
+    },
+    profilePicture:{
+        type:String,
+        default:""
+    },
+    isVerified:Boolean,
+    sessionToken:String,
 }, {timestamps:true})
 
 const UserModel = mongoose.model("Users", UserSchema)
