@@ -52,8 +52,9 @@ router.get('/recent/all/:id', isAuthenticated, async (req, res) => {
                     'recieverInfo._id': 1,
                     'recieverInfo.username': 1,
                     'senderInfo._id': 1,
-                    'senderInfo.username':1 
-                    //profile picture
+                    'senderInfo.username':1, 
+                    'senderInfo.profilePicture': 1,
+                    'recieverInfo.profilePicture': 1
                 }
             }
         ])
