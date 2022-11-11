@@ -56,7 +56,7 @@ router.get('/amount/:postAmount/', isAuthenticated, async (req, res) =>{
         .sort({createdAt: -1})
         .limit(req.params.postAmount)
         .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-        .populate('attending', 'username')
+        .populate('attending', ['username', 'profilePicture'])
 
         return res.status(200).send(posts)
     } catch(err){
@@ -71,7 +71,7 @@ router.get('/getamount/:skip', isAuthenticated, async (req, res) =>{
         .skip(req.params.skip)
         .limit(5)
         .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-        .populate('attending', 'username')
+        .populate('attending', ['username', 'profilePicture'])
 
         return res.send(posts)
     } catch(err){
@@ -84,7 +84,7 @@ router.get('/:postID/attend/:currentShown', isAuthenticated, async (req, res) =>
         const posts = await PostModel.findById(req.params.postID)
         .sort({createdAt: -1})
         .limit(req.params.currentShown)
-        .populate('attending', 'username')
+        .populate('attending', ['username', 'profilePicture'])
         
         return res.status(200).send(posts.attending.slice(3))
     } catch(err){
