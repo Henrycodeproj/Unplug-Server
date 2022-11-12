@@ -183,16 +183,6 @@ router.get('/popular', isAuthenticated, async (req, res) => {
                     as: "original_poster"
                 }
             },
-            {
-                $project: {
-                    'recieverInfo._id': 1,
-                    'recieverInfo.username': 1,
-                    'senderInfo._id': 1,
-                    'senderInfo.username':1, 
-                    'senderInfo.profilePicture': 1,
-                    'recieverInfo.profilePicture': 1
-                }
-            }
         ])
         return res.status(200).send(results)
     } catch(error) {
