@@ -34,7 +34,7 @@ router.get('/all', isAuthenticated, async (req, res) =>{
         const posts = await PostModel.find({})
         .sort({createdAt: -1})
         .populate('posterId', ['username','email', 'createdAt'])
-        .populate('attending', 'username')
+        .populate('attending', ['username','profilePicture'])
         return res.status(200).send(posts)
     } catch(err){
         return res.status(500).send("Internal Server error")
@@ -109,7 +109,7 @@ router.patch('/likes/:postID/:postIndex', isAuthenticated, async (req,res) =>{
     .sort({createdAt: -1})
     .limit(req.params.postIndex)
     .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-    .populate('attending', 'username')
+    .populate('attending', ['username','profilePicture'])
 
     res.status(200).send(updatedPosts)
 })
@@ -125,7 +125,7 @@ router.patch('/edit/:postId', isAuthenticated, async (req, res) => {
 
     const changedPosts = await PostModel.findOne({_id:postID})
     .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-    .populate('attending', 'username')
+    .populate('attending', ['username','profilePicture'])
 
     res.status(200).send(changedPosts)
 })
@@ -183,6 +183,16 @@ router.get('/popular', isAuthenticated, async (req, res) => {
                     as: "original_poster"
                 }
             },
+            {
+                $project: {
+                    'recieverInfo._id': 1,
+                    'recieverInfo.username': 1,
+                    'senderInfo._id': 1,
+                    'senderInfo.username':1, 
+                    'senderInfo.profilePicture': 1,
+                    'recieverInfo.profilePicture': 1
+                }
+            }
         ])
         return res.status(200).send(results)
     } catch(error) {
