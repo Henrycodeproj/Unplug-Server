@@ -81,9 +81,26 @@ router.post('/send/', isAuthenticated, async (req, res) =>{
 })
 
 router.get('/conversation/:convoID', isAuthenticated, async (req, res) =>{
-    const currentConvoMessages = 
-    await MessageModel.find({conversationId:req.params.convoID})
-    .sort({ createdAt: -1 })
-    .limit(50)
-    res.send(currentConvoMessages.reverse())
+    try {
+        const currentConvoMessages = 
+        await MessageModel.find({conversationId:req.params.convoID})
+        .sort({ createdAt: -1 })
+        .limit(50)
+        res.status(200).send(currentConvoMessages.reverse())
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.get('/conversation/prev/:convoID/:currentNumber', isAuthenticated, async (req, res) =>{
+    try {
+        const currentConvoMessages = 
+        await MessageModel.find({ conversationId:req.params.convoID })
+        .sort({ createdAt: -1 })
+        .skip(req.params.currentNumber)
+        .limit(5)
+        res.status(200).send(currentConvoMessages.reverse())
+    } catch (error) {
+        console.log(error)
+    }
 })
