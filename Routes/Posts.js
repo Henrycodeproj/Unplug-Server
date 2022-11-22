@@ -93,7 +93,7 @@ router.get('/:postID/attend/:currentShown', isAuthenticated, async (req, res) =>
 })
 
 router.patch('/likes/:postID/:postIndex', isAuthenticated, async (req,res) =>{
-
+    try {
     const postID = req.params.postID
     const userID = req.body.user
     const post = await PostModel.findById(postID)
@@ -112,6 +112,9 @@ router.patch('/likes/:postID/:postIndex', isAuthenticated, async (req,res) =>{
     .populate('attending', ['username','profilePicture'])
 
     res.status(200).send(updatedPosts)
+    } catch (error) {
+        res.status(500).send("Internal server error")
+    } 
 })
 
 router.patch('/edit/:postId', isAuthenticated, async (req, res) => {
