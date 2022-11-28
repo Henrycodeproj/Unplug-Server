@@ -148,6 +148,53 @@ router.delete('/delete/:postId', isAuthenticated, async (req, res) =>{
     }
 })
 
+router.patch('/search/like/:postID', isAuthenticated, async (req, res) => {
+    if (req.results.id !== req.body.userID) return res.status(401).send({message:"You are not Authorized"})
+
+    try {
+        const post = await PostModel.findById(req.params.postID)
+        if (post.attending.includes(req.body.userID)) 
+            post.attending = post.attending.filter(
+            (users)=> users.toString() !== req.body.userID.toString()
+        )
+        else post.attending.push(req.body.userID)
+    
+        await post.save()
+
+        const updatedPost = await PostModel.find({_id:req.params.postID})
+        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
+        .populate('attending', ['username','profilePicture'])
+    
+        const index = req.body.currentSearch.findIndex(posts => posts._id === req.params.postID)
+        req.body.currentSearch[index] = updatedPost[0]
+        res.send(req.body.currentSearch)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.post('/search/', isAuthenticated, async (req, res) => {
+    try {
+        if (req.body.word.length >= 1) {
+            const response = await PostModel.find(
+                {
+                    Description: {
+                        '$regex' : req.body.word, '$options' : 'i'
+                    }
+                }
+            )
+            .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
+            .populate('attending', ['username','profilePicture'])
+
+            res.status(200).send(response)
+        } else {
+            res.send([])
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 router.post('/report/:postId', isAuthenticated, async (req, res) =>{  
     const {reason, postId, reportingUserID} = req.body.data
     const newReport = new ReportModel({
