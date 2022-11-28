@@ -59,7 +59,6 @@ router.get('/recent/all/:id', isAuthenticated, async (req, res) => {
             }
         ])
         res.send(results)
-        console.log(results)
     } catch (err) {
         res.send(err)
     }
