@@ -2,6 +2,7 @@ import express from "express"
 import isAuthenticated from '../Middleware/auth.js';
 import MessageModel from "../Models/Messages.js";
 import mongoose from "mongoose";
+import UserModel from "../Models/Users.js";
 
 export const router = express.Router()
 
