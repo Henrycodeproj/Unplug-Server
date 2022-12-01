@@ -103,3 +103,17 @@ router.get('/conversation/prev/:convoID/:currentNumber', isAuthenticated, async 
         console.log(error)
     }
 })
+
+router.get('/unread/:convoID/:userID', isAuthenticated, async (req, res) => {
+    try {
+        const user = await UserModel.findOne({_id: req.params.userID})
+        const results = await MessageModel.find({
+            conversationId: req.params.convoID,
+            recipientId: user._id, 
+            createdAt:{$gt: user.lastActiveDate}
+        })
+        if (results) res.send({results:results.length})
+    } catch(error) {
+        console.log(error)
+    }
+})
