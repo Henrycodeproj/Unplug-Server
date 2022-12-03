@@ -48,7 +48,7 @@ router.get('/amount/:postAmount/', isAuthenticated, async (req, res) =>{
             const filter = { _id : req.results.id };
             const update = { lastActiveDate: date };
             await UserModel.findOneAndUpdate(filter, update, {new:true})
-        }, 1500);
+        }, 3000);
 
         const posts = await PostModel.find({})
         .sort({createdAt: -1})
