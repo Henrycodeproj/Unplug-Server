@@ -124,9 +124,13 @@ router.patch('/edit/:postId', isAuthenticated, async (req, res) => {
     const filter = {_id: postID}
     const update = {Description:updatedDescription}
 
-    await PostModel.findOneAndUpdate(filter, update)
-
-    const changedPosts = await PostModel.findOne({_id:postID})
+    const changedPosts = await PostModel.findOneAndUpdate(
+    filter,
+    update,
+    {
+        new : true
+    }
+    )
     .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
     .populate('attending', ['username','profilePicture'])
 
