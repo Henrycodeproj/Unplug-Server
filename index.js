@@ -108,19 +108,19 @@ app.post("/createUser", async (req,res) => {
 
         res.status(201).send(response)
         //commenting this out for demo
-        //try{
-        //    //sends the email with verification token 
-        //    sendMail({
-        //        to:"hennypenny456@gmail.com",
-        //        from:"hennypenny456@gmail.com",
-        //        subject:"Unplug Account Confirmation",
-        //        text:`${emailToken.token} testing this one too`,
-        //        html: `<a href ="http://${req.headers.host}/verify/${emailToken.token}">Click Here to Verify.</a>`
-        //    })
-        //} catch(error) {
-        //    console.log(error)
-        //    res.status(400).send('Email verification failed to send')
-        //}
+        /*try{
+            //sends the email with verification token 
+            sendMail({
+                to:"test@gmail.com",
+                from:"test@gmail.com",
+                subject:"Unplug Account Confirmation",
+                text:`${emailToken.token} testing this one too`,
+                html: `<a href ="http://${req.headers.host}/verify/${emailToken.token}">Click     Here to Verify.</a>`
+            })
+        } catch(error) {
+            console.log(error)
+            res.status(400).send('Email verification failed to send')
+        }*/
     }).catch (error => {
         if (error.keyValue.username && error.code === 11000) res.status(400).send(`This username ${error.keyValue.username} is already taken`)
 
@@ -167,7 +167,7 @@ io.on("connection", (socket) => {
                 .populate('postId', ['_id', 'Description'])
                 socket.broadcast.emit(`${data.posterID}-notification`, response)
                 }
-            }, 2000);
+            }, 3000);
         }
     })
 
