@@ -23,7 +23,7 @@ const app = express()
 dotenv.config();
 
 const corsOptions ={
-    origin:'*',
+    origin:'http://localhost:3000',
     credentials:true,           
     optionSuccessStatus:200,
 }
@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3001
 
 const io = new Server(httpServer, {
     cors:{
-        origin:['https://unplugme.netlify.app/', 'http://localhost:3000'],
+        origin:'http://localhost:3000',
         methods:["GET", "POST", "PATCH", "DELETE"],
         credentials:true
     }
@@ -58,9 +58,7 @@ app.get('/authtest', isAuthenticated, (req,res) =>{
     if (req.isAuth) res.status(200).send(true)
     else res.status(200).send(false)
 })
-app.get ('/', (req, res) => {
-    res.send("Backend is up")
-})
+
 app.get("/verify/:token", async (req, res)=>{
     try {
         const result = await verifyTokenModel.findOne({token:req.params.token})
@@ -77,16 +75,12 @@ app.get("/verify/:token", async (req, res)=>{
         res.status(500).send('Internal Server Error')
     } 
 })
-app.post("/tester", async (req,res) => {
-    const {username, password, email} = req.body
-    res.status(200).send({user:username, password:password, email:email})
-})
 
 app.post("/createUser", async (req,res) => {
     const {username, password, email} = req.body
-    
+
     const newUser = new UserModel({
-        username:username.charAt(0).toUpperCase() + username.slice(1).toLowerCase(),
+        username:username,
         password:password,
         email:email,
         isVerified:true
@@ -134,16 +128,14 @@ let activeUsers = {}
 io.on("connection", (socket) => {
 
     socket.on("status", (userInfo) => {
-        if (!(userInfo.userId in activeUsers)){
+        if (userInfo.userId)
             activeUsers[userInfo.userId] = socket.id
-            socket[socket.id] = userInfo.userId
-        }
-        io.emit("activeUsers", activeUsers)
+        socket.emit("activeUsers", activeUsers)
     })
 
     socket.on("logout", (data) => {
         delete activeUsers[data.userID]
-        io.emit("inactiveUsers", activeUsers)
+        socket.emit("activeUsers", activeUsers)
     })
 
     // new chats socket handler
@@ -172,8 +164,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        delete activeUsers[socket[socket.id]]
-        io.emit("inactiveUsers", activeUsers)
+        console.log(activeUsers, 'remaining active users')
     });
 })
 

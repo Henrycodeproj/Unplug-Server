@@ -8,21 +8,16 @@ export const router = express.Router()
 router.post('/', async (req,res) =>{
     const {login_username, login_password} = req.body
     try {
-        const user = await UserModel.findOne({username:{ '$regex': new RegExp(`^${login_username}$`) , '$options': 'i' }})
+        const user = await UserModel.findOne({username:login_username})
         if (user){
             bcrypt.compare(login_password, user.password, (err, result) =>{
                 if(err) return res.status(500).send({message:'Internal server problem'})
                 if(!result) return res.status(400).send({message:'This password you have entered is incorrect. Please try again.'})
 
                 const accessToken = jwt.sign(
-                    {
-                        username:user.username,
-                        id:user.id
-                    },
-                    process.env.SECRET_SESSION,
-                    {
-                        expiresIn: '1d'
-                    }
+                    {username:user.username, id:user.id},
+                     process.env.SECRET_SESSION,
+                    { expiresIn: '1d'}
                 )
 
                 res.status(200).send(
@@ -33,7 +28,8 @@ router.post('/', async (req,res) =>{
                             id: user.id,
                             username: user.username, 
                             collegeAffiliation:user.collegeAffiliation,
-                            profilePicture: user.profilePicture
+                            profilePicture: user.profilePicture,
+                            lastActive : user.lastActiveDate
                         }
                     }
                 )

@@ -2,7 +2,6 @@ import express from "express"
 import isAuthenticated from '../Middleware/auth.js';
 import MessageModel from "../Models/Messages.js";
 import mongoose from "mongoose";
-import UserModel from "../Models/Users.js";
 
 export const router = express.Router()
 
@@ -53,9 +52,8 @@ router.get('/recent/all/:id', isAuthenticated, async (req, res) => {
                     'recieverInfo._id': 1,
                     'recieverInfo.username': 1,
                     'senderInfo._id': 1,
-                    'senderInfo.username':1, 
-                    'senderInfo.profilePicture': 1,
-                    'recieverInfo.profilePicture': 1
+                    'senderInfo.username':1 
+                    //profile picture
                 }
             }
         ])
@@ -81,40 +79,9 @@ router.post('/send/', isAuthenticated, async (req, res) =>{
 })
 
 router.get('/conversation/:convoID', isAuthenticated, async (req, res) =>{
-    try {
-        const currentConvoMessages = 
-        await MessageModel.find({conversationId:req.params.convoID})
-        .sort({ createdAt: -1 })
-        .limit(50)
-        res.status(200).send(currentConvoMessages.reverse())
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-router.get('/conversation/prev/:convoID/:currentNumber', isAuthenticated, async (req, res) =>{
-    try {
-        const currentConvoMessages = 
-        await MessageModel.find({ conversationId:req.params.convoID })
-        .sort({ createdAt: -1 })
-        .skip(req.params.currentNumber)
-        .limit(5)
-        res.status(200).send(currentConvoMessages.reverse())
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-router.get('/unread/:convoID/:userID', isAuthenticated, async (req, res) => {
-    try {
-        const user = await UserModel.findOne({_id: req.params.userID})
-        const results = await MessageModel.find({
-            conversationId: req.params.convoID,
-            recipientId: user._id, 
-            createdAt:{$gt: user.lastActiveDate}
-        })
-        if (results) res.send({results:results.length})
-    } catch(error) {
-        console.log(error)
-    }
+    const currentConvoMessages = 
+    await MessageModel.find({conversationId:req.params.convoID})
+    .sort({ createdAt: -1 })
+    .limit(50)
+    res.send(currentConvoMessages.reverse())
 })

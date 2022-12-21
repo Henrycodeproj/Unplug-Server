@@ -78,18 +78,3 @@ router.patch("/update/college/:userId", isAuthenticated, async (req, res) => {
         console.log(error)
     }
 })
-
-router.patch("/update/profileImage/:userId", isAuthenticated, async (req, res) => {
-    try {
-        const filter = { _id : req.params.userId }
-        const update = { profilePicture : req.body.data}
-
-        const currentResults = await UserModel.findByIdAndUpdate(filter, update)
-
-        const updatedResults = await UserModel.findById(req.params.userId)
-
-        if (updatedResults) return res.status(200).send({new : updatedResults, prev : currentResults})
-    } catch (error) {
-        console.log(error)
-    }
-})

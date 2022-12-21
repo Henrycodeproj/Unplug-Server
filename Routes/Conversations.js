@@ -17,7 +17,7 @@ router.post('/create', isAuthenticated, async (req, res) => {
             participants:[user1, user2]
         })
 
-    await createConversation.save()
+        await createConversation.save()
     }
     try {
         const newConversation = await ConversationModel.findOne({

@@ -25,14 +25,6 @@ const UserSchema = new mongoose.Schema({
         type:String,
         default:""
     },
-    lastActiveDate: {
-        type:Date,
-        default:null
-    },
-    profilePicture:{
-        type:String,
-        default:""
-    },
     isVerified:Boolean,
     sessionToken:String,
 }, {timestamps:true})

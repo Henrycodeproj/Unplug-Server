@@ -7,34 +7,29 @@ import ReportModel from '../Models/Report.js';
 export const router = express.Router();
 
 router.post('/', isAuthenticated, async (req,res) =>{
-    if (!req.isAuth) return res.status(400).send({messages : "You are not authorized."})
-    try {
-        const {user, post} = req.body
-        const newPosts = new PostModel({
-            Description:post,
-            posterId:user
-        })
+    const {user, post} = req.body
+    const newPosts = new PostModel({
+        Description:post,
+        posterId:user
+    })
 
-        await newPosts.save()
+    await newPosts.save()
 
-        const newestPost = await PostModel.findOne({posterId:user, Description:post})
-        .sort({createdAt:-1})
-        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-        if (newPosts) return res.status(200).send({message:'Posted', newestPost:newestPost})
-        return res.status(500).send({message:'Error your post failed.'})
-    } catch (error) {
-        res.status(404).send({messages:"There was an error while uploading your post."})
-    } 
-
+    const newestPost = await PostModel.findOne({posterId:user, Description:post})
+    .sort({createdAt:-1})
+    .populate('posterId', ['username','email', 'createdAt'])
+    
+    if (newPosts) return res.status(200).send({message:'Posted', newestPost:newestPost})
+    return res.status(500).send({message:'Error your post failed.'})
 })
 
 router.get('/all', isAuthenticated, async (req, res) =>{
-
+    
     try {
         const posts = await PostModel.find({})
         .sort({createdAt: -1})
         .populate('posterId', ['username','email', 'createdAt'])
-        .populate('attending', ['username','profilePicture'])
+        .populate('attending', 'username')
         return res.status(200).send(posts)
     } catch(err){
         return res.status(500).send("Internal Server error")
@@ -42,19 +37,12 @@ router.get('/all', isAuthenticated, async (req, res) =>{
 })
 
 router.get('/amount/:postAmount/', isAuthenticated, async (req, res) =>{
-    const date = new Date()
     try{
-        setTimeout(async () => {
-            const filter = { _id : req.results.id };
-            const update = { lastActiveDate: date };
-            await UserModel.findOneAndUpdate(filter, update, {new:true})
-        }, 3000);
-
         const posts = await PostModel.find({})
         .sort({createdAt: -1})
         .limit(req.params.postAmount)
-        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-        .populate('attending', ['username', 'profilePicture'])
+        .populate('posterId', ['username','email', 'createdAt'])
+        .populate('attending', 'username')
 
         return res.status(200).send(posts)
     } catch(err){
@@ -68,8 +56,8 @@ router.get('/getamount/:skip', isAuthenticated, async (req, res) =>{
         .sort({createdAt: -1})
         .skip(req.params.skip)
         .limit(5)
-        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-        .populate('attending', ['username', 'profilePicture'])
+        .populate('posterId', ['username','email', 'createdAt'])
+        .populate('attending', 'username')
 
         return res.send(posts)
     } catch(err){
@@ -82,7 +70,7 @@ router.get('/:postID/attend/:currentShown', isAuthenticated, async (req, res) =>
         const posts = await PostModel.findById(req.params.postID)
         .sort({createdAt: -1})
         .limit(req.params.currentShown)
-        .populate('attending', ['username', 'profilePicture'])
+        .populate('attending', 'username')
         
         return res.status(200).send(posts.attending.slice(3))
     } catch(err){
@@ -90,29 +78,51 @@ router.get('/:postID/attend/:currentShown', isAuthenticated, async (req, res) =>
     }
 })
 
-router.patch('/likes/:postID/:postIndex', isAuthenticated, async (req,res) =>{
+router.patch('/like/:postID/:postIndex', isAuthenticated, async (req,res) =>{
     try {
-    const postID = req.params.postID
-    const userID = req.body.user
-    const post = await PostModel.findById(postID)
+        const postID = req.params.postID
+        const userID = req.body.user
+        const post = await PostModel.findById(postID)
 
-    if (post.attending.includes(userID)) post.attending = post.attending.filter(
-        (users)=> users.toString() !== userID.toString()
-    )
-    else post.attending.push(userID)
+        if (!post.attending.includes(userID)){
+            post.attending.push(userID)
+            await post.save()
+        } 
 
-    await post.save()
+        const updatedPosts = await PostModel.find({})
+        .sort({createdAt: -1})
+        .limit(req.params.postIndex)
+        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
+        .populate('attending', ['username','profilePicture'])
 
-    const updatedPosts = await PostModel.find({})
-    .sort({createdAt: -1})
-    .limit(req.params.postIndex)
-    .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-    .populate('attending', ['username','profilePicture'])
-
-    res.status(200).send(updatedPosts)
+        res.status(200).send(updatedPosts)
     } catch (error) {
-        res.status(500).send("Internal server error")
-    } 
+        console.log(error)
+    }
+})
+
+router.patch('/unlike/:postID/:postIndex', isAuthenticated, async (req,res) =>{
+    try {
+        const postID = req.params.postID
+        const userID = req.body.user
+        const post = await PostModel.findById(postID)
+
+        if (post.attending.includes(userID)) 
+            post.attending = post.attending.filter(
+            (users)=> users.toString() !== userID.toString()
+        )
+
+        await post.save()
+
+        const updatedPosts = await PostModel.find({})
+        .sort({createdAt: -1})
+        .limit(req.params.postIndex)
+        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
+        .populate('attending', ['username','profilePicture'])
+        res.status(200).send(updatedPosts)
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 router.patch('/edit/:postId', isAuthenticated, async (req, res) => {
@@ -122,13 +132,11 @@ router.patch('/edit/:postId', isAuthenticated, async (req, res) => {
     const filter = {_id: postID}
     const update = {Description:updatedDescription}
 
-    const changedPosts = await PostModel.findOneAndUpdate(
-        filter, 
-        update, 
-        {new : true}
-    )
-    .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-    .populate('attending', ['username','profilePicture'])
+    await PostModel.findOneAndUpdate(filter, update)
+
+    const changedPosts = await PostModel.findOne({_id:postID})
+    .populate('posterId', ['username','email', 'createdAt'])
+    .populate('attending', 'username')
 
     res.status(200).send(changedPosts)
 })
@@ -144,53 +152,6 @@ router.delete('/delete/:postId', isAuthenticated, async (req, res) =>{
         await PostModel.findByIdAndDelete({_id:postId})
         res.status(200).send(postId)
     } catch(error) {
-        console.log(error)
-    }
-})
-
-router.patch('/search/like/:postID', isAuthenticated, async (req, res) => {
-    if (req.results.id !== req.body.userID) return res.status(401).send({message:"You are not Authorized"})
-
-    try {
-        const post = await PostModel.findById(req.params.postID)
-        if (post.attending.includes(req.body.userID)) 
-            post.attending = post.attending.filter(
-            (users)=> users.toString() !== req.body.userID.toString()
-        )
-        else post.attending.push(req.body.userID)
-    
-        await post.save()
-
-        const updatedPost = await PostModel.find({_id:req.params.postID})
-        .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-        .populate('attending', ['username','profilePicture'])
-    
-        const index = req.body.currentSearch.findIndex(posts => posts._id === req.params.postID)
-        req.body.currentSearch[index] = updatedPost[0]
-        res.send(req.body.currentSearch)
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-router.post('/search/', isAuthenticated, async (req, res) => {
-    try {
-        if (req.body.word.length >= 1) {
-            const response = await PostModel.find(
-                {
-                    Description: {
-                        '$regex' : req.body.word, '$options' : 'i'
-                    }
-                }
-            )
-            .populate('posterId', ['username','email', 'createdAt', 'profilePicture'])
-            .populate('attending', ['username','profilePicture'])
-
-            res.status(200).send(response)
-        } else {
-            res.send([])
-        }
-    } catch (error) {
         console.log(error)
     }
 })
