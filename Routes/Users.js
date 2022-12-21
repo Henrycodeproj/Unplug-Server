@@ -93,3 +93,62 @@ router.patch("/update/profileImage/:userId", isAuthenticated, async (req, res) =
         console.log(error)
     }
 })
+
+router.post("/create/notifications", isAuthenticated, async (req, res) => {
+    console.log(req.body.postId)
+    if (req.body.notifiedUser === req.body.attendId) return
+
+    const checkExisting = await NotificationModel.findOne({
+        notifiedUser: req.body.notifiedUser,
+        postId: req.body.postId,
+        attendId: req.body.attendId
+    })
+    
+    if (!checkExisting){
+        const notification = new NotificationModel({
+            notifiedUser: req.body.notifiedUser,
+            postId: req.body.postId,
+            attendId: req.body.attendId
+        })
+        await notification.save()
+    }
+})
+
+router.get("/:user/notifications", isAuthenticated, async (req, res) => {
+    try {
+        const user = await UserModel.findOne({_id: req.params.user})
+        if (user.id !== req.results.id) return res.status(400).send({message:"Invalid user"})
+        const userNotifications = await NotificationModel.find({notifiedUser: req.params.user}
+        )
+        .sort({ createdAt: -1 })
+        .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
+        .populate('postId', ['_id', 'Description'])
+        res.status(200).send({notifications: userNotifications, date: user.lastActiveDate})
+    } catch(error) {
+        console.log(error)
+    }
+})
+
+router.get("/:user/newnotifications", isAuthenticated, async (req, res) => {
+    try {
+        const user = await UserModel.findOne({_id: req.params.user})
+        const newNotifications = await NotificationModel.find({
+            notifiedUser: req.params.user,
+            createdAt:{$gt: user.lastActiveDate}
+        })
+        if (newNotifications) res.status(200).send({new : newNotifications.length, lastActive: user.lastActiveDate})
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.post("/update/activity", isAuthenticated, async (req, res) => {
+    const date = new Date()
+    try { 
+        const filter = { _id : req.results.id };
+        const update = { lastActiveDate: date };
+        await UserModel.findOneAndUpdate(filter, update, {new:true})
+    } catch(error) {
+        console.log(error)
+    }
+})

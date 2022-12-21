@@ -8,7 +8,12 @@ export const router = express.Router()
 router.post('/', async (req,res) =>{
     const {login_username, login_password} = req.body
     try {
-        const user = await UserModel.findOne({username:{ '$regex': new RegExp(`^${login_username}$`) , '$options': 'i' }})
+        const user = await UserModel.findOne({
+            username:{
+                 '$regex': new RegExp(`^${login_username}$`),
+                 '$options': 'i' 
+            }
+        })
         if (user){
             bcrypt.compare(login_password, user.password, (err, result) =>{
                 if(err) return res.status(500).send({message:'Internal server problem'})
@@ -33,7 +38,8 @@ router.post('/', async (req,res) =>{
                             id: user.id,
                             username: user.username, 
                             collegeAffiliation:user.collegeAffiliation,
-                            profilePicture: user.profilePicture
+                            profilePicture: user.profilePicture,
+                            lastActive : user.lastActiveDate
                         }
                     }
                 )

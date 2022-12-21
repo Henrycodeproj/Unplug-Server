@@ -8,6 +8,7 @@ import verifyTokenModel from './Models/Token.js';
 import crypto from 'crypto';
 import sendMail from './config/mail.js';
 import isAuthenticated from './Middleware/auth.js';
+import NotificationModel from './Models/Notifications.js';
 import { router as PostsRouter } from './Routes/Posts.js';
 import { router as UserRouter } from './Routes/Users.js'
 import { router as MessageRouter } from './Routes/Messages.js'
@@ -145,8 +146,32 @@ io.on("connection", (socket) => {
         delete activeUsers[data.userID]
         io.emit("inactiveUsers", activeUsers)
     })
+    
+    socket.on("notification", async (data) => {
+        const {posterID, postID, currentUser} = data
+        const checkNotification = await NotificationModel
+        .findOne({
+            notifiedUser: posterID,
+            postId:postID, 
+            attendId: currentUser
+        })
+        if (data.posterID in activeUsers){
+            setTimeout(async () => {
+                if (posterID !== currentUser && !checkNotification) {
+                const response = await NotificationModel
+                .find({
+                    notifiedUser: posterID, 
+                    postId:postID
+                })
+                .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
+                .populate('postId', ['_id', 'Description'])
+                socket.broadcast.emit(`${data.posterID}-notification`, response)
+                }
+            }, 2000);
+        }
+    })
 
-    // new chats socket handler
+    //new chats socket handler
     socket.on("messages", (newChatInfo) => {
         const newMessage = {
             _id: newChatInfo.chatId,
