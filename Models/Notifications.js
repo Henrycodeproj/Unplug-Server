@@ -16,7 +16,7 @@ const NotificationSchema =  new mongoose.Schema({
     expiresAt: {
         type: Date,
         default: Date.now,
-        expires: 60,
+        expires: '2d',
     }
 }, {timestamps:true})
 
