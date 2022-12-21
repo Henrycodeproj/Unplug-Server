@@ -2,6 +2,7 @@ import express from 'express';
 import isAuthenticated from '../Middleware/auth.js';
 import UserModel from '../Models/Users.js';
 import ConversationModel from '../Models/Conversations.js';
+import NotificationModel from '../Models/Notifications.js';
 
 export const router = express.Router()
 
