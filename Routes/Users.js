@@ -115,6 +115,19 @@ router.post("/create/notifications", isAuthenticated, async (req, res) => {
     }
 })
 
+router.post("/delete/notifications", isAuthenticated, async (req, res) => {
+    if (req.body.notifiedUser === req.body.attendId) return
+    try {
+        await NotificationModel.findOneAndDelete({
+            notifiedUser: req.body.notifiedUser,
+            postId: req.body.postId,
+            attendId: req.body.attendId
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 router.get("/:user/notifications", isAuthenticated, async (req, res) => {
     try {
         const user = await UserModel.findOne({_id: req.params.user})
