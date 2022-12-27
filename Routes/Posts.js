@@ -3,6 +3,7 @@ import isAuthenticated from '../Middleware/auth.js';
 import PostModel from '../Models/Posts.js';
 import UserModel from '../Models/Users.js';
 import ReportModel from '../Models/Report.js';
+import NotificationModel from '../Models/Notifications.js'
 
 export const router = express.Router();
 
@@ -93,13 +94,27 @@ router.get('/:postID/attend/:currentShown', isAuthenticated, async (req, res) =>
 router.patch('/like/:postID/:postIndex', isAuthenticated, async (req,res) =>{
     try {
         const postID = req.params.postID
-        const userID = req.body.user
+        const user = req.body.user
         const post = await PostModel.findById(postID)
 
-        if (!post.attending.includes(userID)){
-            post.attending.push(userID)
+        if (!post.attending.includes(user)){
+            post.attending.push(user)
             await post.save()
         } 
+        const checkExisting = await NotificationModel.findOne({
+            notifiedUser: post.posterId._id,
+            postId: post._id,
+            attendId: user.id
+        })
+        //creates notification
+        if (!checkExisting){
+            const notification = new NotificationModel({
+                notifiedUser: post.posterId._id,
+                postId: post._id,
+                attendId: user.id
+            })
+            notification.save()
+        }
 
         const updatedPosts = await PostModel.find({})
         .sort({createdAt: -1})
@@ -116,16 +131,21 @@ router.patch('/like/:postID/:postIndex', isAuthenticated, async (req,res) =>{
 router.patch('/unlike/:postID/:postIndex', isAuthenticated, async (req,res) =>{
     try {
         const postID = req.params.postID
-        const userID = req.body.user
+        const user = req.body.user
         const post = await PostModel.findById(postID)
 
-        if (post.attending.includes(userID)) 
+        if (post.attending.includes(user)) 
             post.attending = post.attending.filter(
-            (users)=> users.toString() !== userID.toString()
+            (users)=> users.toString() !== user.toString()
         )
-        console.log("unlike called", post.attending.includes(userID))
-
         await post.save()
+
+        //deletes notification in db
+        await NotificationModel.findOneAndDelete({
+            notifiedUser: post.posterId._id,
+            postId: post._id,
+            attendId: user.id
+        })
 
         const updatedPosts = await PostModel.find({})
         .sort({createdAt: -1})
