@@ -111,7 +111,7 @@ router.patch('/like/:postID/:postIndex', isAuthenticated, async (req,res) =>{
             const notification = new NotificationModel({
                 notifiedUser: post.posterId._id,
                 postId: post._id,
-                attendId: user.id
+                attendId: user
             })
             notification.save()
         }
@@ -144,7 +144,7 @@ router.patch('/unlike/:postID/:postIndex', isAuthenticated, async (req,res) =>{
         await NotificationModel.findOneAndDelete({
             notifiedUser: post.posterId._id,
             postId: post._id,
-            attendId: user.id
+            attendId: user
         })
 
         const updatedPosts = await PostModel.find({})
