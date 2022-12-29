@@ -152,22 +152,14 @@ io.on("connection", (socket) => {
         const checkNotification = await NotificationModel
         .findOne({
             notifiedUser: posterID,
-            postId:postID, 
+            postId: postID, 
             attendId: currentUser
         })
-        if (data.posterID in activeUsers){
-            setTimeout(async () => {
-                if (posterID !== currentUser && !checkNotification) {
-                const response = await NotificationModel
-                .find({
-                    notifiedUser: posterID, 
-                    postId:postID
-                })
-                .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
-                .populate('postId', ['_id', 'Description'])
-                socket.broadcast.emit(`${data.posterID}-notification`, response)
-                }
-            }, 3000);
+        .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
+        .populate('postId', ['_id', 'Description'])
+
+        if (posterID in activeUsers) {
+            socket.broadcast.emit(`${posterID}-notification`, checkNotification)
         }
     })
 
