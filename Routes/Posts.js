@@ -10,10 +10,11 @@ export const router = express.Router();
 router.post('/', isAuthenticated, async (req,res) =>{
     if (!req.isAuth) return res.status(400).send({messages : "You are not authorized."})
     try {
-        const {user, post} = req.body
+        const {user, post, date} = req.body
         const newPosts = new PostModel({
-            Description:post,
-            posterId:user
+            Description: post,
+            posterId: user, 
+            timeAndDate : date
         })
 
         await newPosts.save()

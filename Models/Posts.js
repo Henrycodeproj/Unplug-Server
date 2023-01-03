@@ -14,6 +14,9 @@ const PostSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         index : { expires: '3d' }
+    },
+    timeAndDate : {
+        type:String
     }
 },{timestamps:true})
 
