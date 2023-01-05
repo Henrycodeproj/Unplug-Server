@@ -158,7 +158,7 @@ io.on("connection", (socket) => {
         .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
         .populate('postId', ['_id', 'Description'])
 
-        if (posterID in activeUsers) {
+        if (posterID in activeUsers && posterID !== currentUser) {
             socket.broadcast.emit(`${posterID}-notification`, checkNotification)
         }
     })
