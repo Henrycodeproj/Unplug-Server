@@ -45,7 +45,13 @@ router.patch("/update/socials/:userId", isAuthenticated, async (req, res) => {
         const user = await UserModel.findOne({_id:req.params.userId})
         if (user){
             for (const socials in socialMediaLinks) {
-                if (socialMediaLinks[socials]) user.socialMedia.set(`${socials}`, socialMediaLinks[socials])
+                if (socialMediaLinks[socials])
+                    try {
+                        const validLink = new URL(socialMediaLinks[socials])
+                          if (validLink) user.socialMedia.set(`${socials}`, socialMediaLinks[socials])
+                    } catch(error) {
+                        user.socialMedia.set(`${socials}`, `https://${socialMediaLinks[socials]}`)
+                    }
             }
         }
         user.save()
