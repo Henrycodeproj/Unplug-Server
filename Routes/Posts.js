@@ -284,3 +284,34 @@ router.get('/popular', isAuthenticated, async (req, res) => {
         console.log(error)
     }
 })
+
+router.get("/all/posts", isAuthenticated, async (req, res) => {
+    try {
+      const results = await PostModel.aggregate([
+        {
+          $set: {
+            start: "$timeAndDate",
+            title: "$Description",
+               id: "$_id",
+          }
+        },
+        {
+          $project: {
+            _id : 0,
+            timeAndDate: 0,
+            Description: 0,
+            posterId: 0,
+            attending :0,
+            expiresAt: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            __v: 0
+          }
+        }
+      ])
+      console.log(results)
+      res.status(200).send(results)
+    } catch (error) {
+      console.log(error)
+    }
+  })
