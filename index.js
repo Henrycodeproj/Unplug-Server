@@ -14,6 +14,7 @@ import { router as UserRouter } from './Routes/Users.js'
 import { router as MessageRouter } from './Routes/Messages.js'
 import { router as ConversationRouter } from "./Routes/Conversations.js"
 import { router as LoginRouter } from "./Routes/Login.js"
+import {router as AdminRouter } from "./Routes/Admin.js"
 import { Server } from 'socket.io';
 import { createServer } from "http"; 
 
