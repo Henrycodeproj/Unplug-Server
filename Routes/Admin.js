@@ -31,6 +31,11 @@ router.post("/authenticate", async (req, res) => {
   }
 });
 
+router.get("/updatingall", async (req,res) => {
+  const results = await UserModel.updateMany({}, {$set:{admin: false}})
+  res.send(results)
+})
+
 router.post("/Post", async (req, res) => {
   const { order } = req.body.params.sort;
   try {
