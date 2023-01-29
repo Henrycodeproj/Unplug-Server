@@ -14,7 +14,7 @@ import { router as UserRouter } from './Routes/Users.js'
 import { router as MessageRouter } from './Routes/Messages.js'
 import { router as ConversationRouter } from "./Routes/Conversations.js"
 import { router as LoginRouter } from "./Routes/Login.js"
-import {router as AdminRouter } from "./Routes/Admin.js"
+import { router as AdminRouter } from "./Routes/Admin.js"
 import { Server } from 'socket.io';
 import { createServer } from "http"; 
 
@@ -49,6 +49,7 @@ app.use('/user', UserRouter);
 app.use('/message', MessageRouter);
 app.use('/conversation', ConversationRouter);
 app.use('/login', LoginRouter);
+app.use('/admin', AdminRouter);
 
 const DB_URL = `mongodb+srv://UnplugDemo:${demoDatabasePassword}@cluster0.scacjob.mongodb.net/?retryWrites=true&w=majority`
 
