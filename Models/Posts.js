@@ -17,7 +17,10 @@ const PostSchema = new mongoose.Schema({
     },
     timeAndDate : {
         type:String
-    }
+    },
+    timeAndDateEnd: {
+        type:String
+    },
 },{timestamps:true})
 
 const PostModel = mongoose.model("Posts", PostSchema)
