@@ -175,7 +175,7 @@ router.patch(
         attendId: user,
       });
 
-      res.status(200);
+      res.status(200).send({message:"unliked"});
     } catch (error) {
       console.log(error);
     }
