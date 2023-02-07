@@ -119,50 +119,42 @@ router.get(
   }
 );
 
-router.patch("/like/:postID/:postIndex", isAuthenticated, async (req, res) => {
+router.patch("/like/:postID/", isAuthenticated, async (req, res) => {
+  const {user, posterId} = req.body
   try {
     const postID = req.params.postID;
-    const user = req.body.user;
     const post = await PostModel.findById(postID);
 
-    if (!post.attending.includes(user)) {
-      post.attending.push(user);
-      await post.save();
-    }
-    const checkExisting = await NotificationModel.findOne({
-      notifiedUser: post.posterId._id,
-      postId: post._id,
+    const checkExisting = await NotificationModel.find({
+      notifiedUser: posterId,
+      postId: postID,
       attendId: user.id,
     });
+
     //creates notification
-    if (!checkExisting) {
+    if (checkExisting.length === 0) {
       const notification = new NotificationModel({
         notifiedUser: post.posterId._id,
-        postId: post._id,
+        postId: postID,
         attendId: user,
       });
       notification.save();
     }
 
-    const updatedPosts = await PostModel.find({})
-      .sort({ createdAt: -1 })
-      .limit(req.params.postIndex)
-      .populate("posterId", [
-        "username",
-        "email",
-        "createdAt",
-        "profilePicture",
-      ])
-      .populate("attending", ["username", "profilePicture"]);
 
-    res.status(200).send(updatedPosts);
+    if (!post.attending.includes(user) && checkExisting) {
+      post.attending.push(user);
+      await post.save();
+    }
+    res.status(200).send({message:"liked"})
+
   } catch (error) {
-    res.status(500).send("Internal server error");
+    console.log(error);
   }
 });
 
 router.patch(
-  "/unlike/:postID/:postIndex",
+  "/unlike/:postID/",
   isAuthenticated,
   async (req, res) => {
     try {
@@ -183,17 +175,7 @@ router.patch(
         attendId: user,
       });
 
-      const updatedPosts = await PostModel.find({})
-        .sort({ createdAt: -1 })
-        .limit(req.params.postIndex)
-        .populate("posterId", [
-          "username",
-          "email",
-          "createdAt",
-          "profilePicture",
-        ])
-        .populate("attending", ["username", "profilePicture"]);
-      res.status(200).send(updatedPosts);
+      res.status(200);
     } catch (error) {
       console.log(error);
     }
