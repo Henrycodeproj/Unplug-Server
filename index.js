@@ -150,20 +150,31 @@ io.on("connection", (socket) => {
     })
     
     socket.on("notification", async (data) => {
-        const {posterID, postID, currentUser} = data
-        const checkNotification = await NotificationModel
-        .findOne({
-            notifiedUser: posterID,
-            postId: postID, 
-            attendId: currentUser
+        const { posterID, postID, currentUser, user } = data;
+    
+        const checkNotification = await NotificationModel.find({
+          notifiedUser: posterID,
+          postId: postID,
+          attendId: currentUser,
         })
-        .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
-        .populate('postId', ['_id', 'Description'])
-
+          .populate("attendId", [
+            "username",
+            "email",
+            "createdAt",
+            "profilePicture",
+          ])
+          .populate("postId", ["_id", "Description"]);
         if (posterID in activeUsers && posterID !== currentUser) {
-            socket.broadcast.emit(`${posterID}-notification`, checkNotification)
+          socket.broadcast.emit(`${posterID}-notification`, checkNotification);
         }
-    })
+        socket.broadcast.emit("likedpost", { post: postID, user: user });
+      });
+      
+      socket.on("removeUser", async (data) => {
+        console.log(data);
+        const { user, post } = data;
+        socket.broadcast.emit("removeLike", { user: user, post: post });
+      });
 
     //new chats socket handler
     socket.on("messages", (newChatInfo) => {
