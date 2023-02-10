@@ -183,19 +183,23 @@ router.patch(
 );
 
 router.patch("/edit/:postId", isAuthenticated, async (req, res) => {
-  const postID = req.params.postId;
-  const updatedDescription = req.body.updatedDescription;
+  try {
+    const postID = req.params.postId;
+    const updatedDescription = req.body.updatedDescription;
 
-  const filter = { _id: postID };
-  const update = { Description: updatedDescription };
+    const filter = { _id: postID };
+    const update = { Description: updatedDescription };
 
-  const changedPosts = await PostModel.findOneAndUpdate(filter, update, {
-    new: true,
-  })
-    .populate("posterId", ["username", "email", "createdAt", "profilePicture"])
-    .populate("attending", ["username", "profilePicture"]);
+    const changedPosts = await PostModel.findOneAndUpdate(filter, update, {
+      new: true,
+    })
+      .populate("posterId", ["username", "email", "createdAt", "profilePicture"])
+      .populate("attending", ["username", "profilePicture"]);
 
-  res.status(200).send(changedPosts);
+    res.status(200).send(changedPosts);
+  } catch(error) {
+    console.log(error)
+  }
 });
 
 router.delete("/delete/:postId", isAuthenticated, async (req, res) => {
@@ -275,14 +279,18 @@ router.post("/search/", isAuthenticated, async (req, res) => {
 });
 
 router.post("/report/:postId", isAuthenticated, async (req, res) => {
-  const { reason, postId, reportingUserID } = req.body.data;
-  const newReport = new ReportModel({
-    reason: reason,
-    reportedPostId: postId,
-    reportUserId: reportingUserID,
-  });
-  await newReport.save();
-  res.status(200).send({ message: "report recieved" });
+  try {
+    const { reason, postId, reportingUserID } = req.body.data;
+    const newReport = new ReportModel({
+      reason: reason,
+      reportedPostId: postId,
+      reportUserId: reportingUserID,
+    });
+    await newReport.save();
+    res.status(200).send({ message: "report recieved" });
+  } catch(error) {
+    console.log(error)
+  }
 });
 
 router.get("/popular", isAuthenticated, async (req, res) => {
