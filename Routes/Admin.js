@@ -15,17 +15,18 @@ router.post("/authenticate", async (req, res) => {
     });
     const checkPassword = await bcrypt.compare(password, user.password);
     const randomHash = crypto.randomBytes(64).toString("hex");
-    const accessToken = jwt.sign(
-      {
-        username: username,
-        refreshToken: randomHash,
-      },
-      process.env.SECRET_SESSION,
-      { expiresIn: "1d" }
-    );
-    if (checkPassword && user.admin)
+    if (checkPassword && user.admin){
+      const accessToken = jwt.sign(
+        {
+          username: username,
+          refreshToken: randomHash,
+        },
+        process.env.SECRET_SESSION,
+        { expiresIn: "1d" }
+      );
       return res.send({ adminToken: accessToken, auth: true });
-    else res.send({ data: false });
+    }
+    else res.send({ auth: false });
   } catch (uncaughtError) {
     console.log(uncaughtError);
   }
