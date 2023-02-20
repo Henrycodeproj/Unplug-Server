@@ -382,7 +382,6 @@ router.get("/all/events", isAuthenticated, async (req, res) => {
 
 router.post("/all/self/events", isAuthenticated, async (req, res) => {
   const {userID} = req.body
-  console.log(userID)
   const dateToday = new Date();
   const previousDay = new Date(
     `${
@@ -430,7 +429,6 @@ router.post("/all/self/events", isAuthenticated, async (req, res) => {
         },
       },
     ]);
-    console.log(results);
     res.status(200).send(results);
   } catch (error) {
     console.log(error);
