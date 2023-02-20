@@ -4,6 +4,7 @@ import PostModel from "../Models/Posts.js";
 import UserModel from "../Models/Users.js";
 import ReportModel from "../Models/Report.js";
 import NotificationModel from "../Models/Notifications.js";
+import mongoose from "mongoose";
 
 export const router = express.Router();
 
