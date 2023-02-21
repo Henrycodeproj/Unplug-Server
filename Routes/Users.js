@@ -112,8 +112,22 @@ router.get("/:user/notifications", isAuthenticated, async (req, res) => {
         .sort({ createdAt: -1 })
         .populate('attendId', ['username','email', 'createdAt', 'profilePicture'])
         .populate('postId', ['_id', 'Description'])
-        const filtereduserNotifications = userNotifications.filter(notifications => notifications.postId !== null)
-        res.status(200).send({notifications: filtereduserNotifications, date: user.lastActiveDate})
+
+        const filtereduserNotifications = userNotifications.filter(checkPosts);
+
+        function checkPosts(notifications) {
+          if (
+            notifications.postId !== null &&
+            mongoose.Types.ObjectId(notifications.notifiedUser).toString() !==
+              mongoose.Types.ObjectId(notifications.attendId._id).toString()
+          )
+            return notifications;
+        }
+
+        res.status(200).send({
+            notifications: filtereduserNotifications, 
+            date: user.lastActiveDate
+        })
     } catch(error) {
         console.log(error)
     }
