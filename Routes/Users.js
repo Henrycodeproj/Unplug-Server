@@ -156,3 +156,17 @@ router.post("/update/activity", isAuthenticated, async (req, res) => {
         console.log(error)
     }
 })
+
+router.get("/chat/search/", isAuthenticated, async (req, res) => {
+    try {
+      const response = await UserModel.find(
+        {
+          _id: {$ne: req.results.id}
+        },
+         'username email profilePicture'
+      )
+      res.status(200).send(response)
+    } catch (error) {
+      console.log(error)
+    }
+  })
