@@ -19,37 +19,32 @@ router.post('/', async (req,res) =>{
                 if(err) return res.status(500).send({message:'Internal server problem'})
                 if(!result) return res.status(400).send({message:'This password you have entered is incorrect. Please try again.'})
 
+                const salt = bcrypt.genSaltSync(10)
+                const token = bcrypt.hashSync(login_username, salt)
+                const randomHash = crypto.randomBytes(64).toString('hex')
+                
+        
                 const accessToken = jwt.sign(
-                    {
+                  {
+                    username: user.username,
+                    refreshToken: randomHash,
+                    id: user.id, 
+                    token: token,
+                    user: {
+                      id: user.id,
                       username: user.username,
-                      refreshToken: randomHash,
-                      id: user.id, 
-                      token: token,
-                      user: {
-                        id: user.id,
-                        username: user.username,
-                        lastActive: user.lastActiveDate,
-                      }
-                    },
-                    process.env.SECRET_SESSION,
-                    { expiresIn: "1d" }
-                  );
-
-                res.status(200).send(
-                    {
-                        message:'Logging In...',
-                        accessToken: accessToken, 
-                        user: {
-                            id: user.id,
-                            username: user.username, 
-                            collegeAffiliation:user.collegeAffiliation,
-                            profilePicture: user.profilePicture,
-                            lastActive : user.lastActiveDate
-                        }
+                      lastActive: user.lastActiveDate,
                     }
-                )
-
-            })
+                  },
+                  process.env.SECRET_SESSION,
+                  { expiresIn: "1d" }
+                );
+        
+                res.status(200).send({
+                  message: "Logging In...",
+                  accessToken: accessToken,
+                });
+              });
         } else{
             res.status(404).send({message:"This user does not exist."})
         }
