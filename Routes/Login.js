@@ -21,14 +21,19 @@ router.post('/', async (req,res) =>{
 
                 const accessToken = jwt.sign(
                     {
-                        username:user.username,
-                        id:user.id
+                      username: user.username,
+                      refreshToken: randomHash,
+                      id: user.id, 
+                      token: token,
+                      user: {
+                        id: user.id,
+                        username: user.username,
+                        lastActive: user.lastActiveDate,
+                      }
                     },
                     process.env.SECRET_SESSION,
-                    {
-                        expiresIn: '1d'
-                    }
-                )
+                    { expiresIn: "1d" }
+                  );
 
                 res.status(200).send(
                     {
