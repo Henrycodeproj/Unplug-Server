@@ -133,7 +133,3 @@ router.post('/conversation/read/', isAuthenticated, async (req, res) => {
 
     await MessageModel.updateMany(filter, update)
 })
-
-router.get('/updating', isAuthenticated, async (req, res) => {
-    const response = await MessageModel.updateMany({}, { $set: { read : true }})
-})
