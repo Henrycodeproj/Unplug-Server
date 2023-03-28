@@ -111,10 +111,30 @@ router.get('/unread/:convoID/:userID', isAuthenticated, async (req, res) => {
         const results = await MessageModel.find({
             conversationId: req.params.convoID,
             recipientId: user._id, 
-            createdAt:{$gt: user.lastActiveDate}
+            read: false
         })
         if (results) res.send({results:results.length})
     } catch(error) {
         console.log(error)
     }
 })
+
+router.post('/conversation/read/', isAuthenticated, async (req, res) => {
+    const todaysDate = new Date()
+    const {recievingUser, senderID} = req.body
+    
+    const filter = {
+        recipientId: mongoose.Types.ObjectId(recievingUser),
+        senderId: mongoose.Types.ObjectId(senderID),
+        createdAt: { $lt: todaysDate },
+        read: false
+    }
+    const update = { read: true }
+
+    await MessageModel.updateMany(filter, update)
+})
+
+//router.get('/updating', isAuthenticated, async (req, res) => {
+//    const response = await MessageModel.updateMany({}, { $set: { read : true }})
+//    console.log(response, 'updatemany response')
+//})
